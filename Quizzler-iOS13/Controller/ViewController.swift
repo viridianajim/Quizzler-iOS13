@@ -10,32 +10,16 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var questionLabel: UILabel!
     @IBOutlet weak var progressBar: UIProgressView!
     @IBOutlet weak var trueButton: UIButton!
     @IBOutlet weak var falseButton: UIButton!
     
-    var questionsCorrect = 0
-    let quiz = [
-      
-                Question(q: "A slug's blood is green.", a: "True"),
-                Question(q: "Approximately one quarter of human bones are in the feet.", a: "True"),
-                Question(q: "The total surface area of two human lungs is approximately 70 square metres.", a: "True"),
-                Question(q: "In West Virginia, USA, if you accidentally hit an animal with your car, you are free to take it home to eat.", a: "True"),
-                Question(q: "In London, UK, if you happen to die in the House of Parliament, you are technically entitled to a state funeral, because the building is considered too sacred a place.", a: "False"),
-                Question(q: "It is illegal to pee in the Ocean in Portugal.", a: "True"),
-                Question(q: "You can lead a cow down stairs but not up stairs.", a: "False"),
-                Question(q: "Google was originally called 'Backrub'.", a: "True"),
-                Question(q: "Buzz Aldrin's mother's maiden name was 'Moon'.", a: "True"),
-                Question(q: "The loudest sound produced by any animal is 188 decibels. That animal is the African Elephant.", a: "False"),
-                Question(q: "No piece of square dry paper can be folded in half more than 7 times.", a: "False"),
-                Question(q: "Chocolate affects a dog's heart and nervous system; a few ounces are enough to kill a small dog.", a: "True")
-     
+    //var questionsCorrect = 0
+    var quizBrain = QuizBrain()
 
-  
-    ]
-    
-    var questionNumber = 0
+   
     
     
     
@@ -54,25 +38,24 @@ class ViewController: UIViewController {
         
         
         let userAnswer = sender.currentTitle!//True or false
-        let actualAnswer = quiz[questionNumber].answer
+
         
+        let userGotItRight = quizBrain.checkAnswer(userAnswer)
         
-        if userAnswer == actualAnswer {
+        if userGotItRight {
             print("right")
             sender.backgroundColor = UIColor.green
             
-            questionsCorrect += 1
-            print(questionsCorrect)
-            progressBar.progress = Float(questionsCorrect)/Float(quiz.count)
+            //questionsCorrect += 1
+            //print(questionsCorrect)
+            progressBar.progress = quizBrain.getProcess()
         }
         else{
             print("wrong")
             sender.backgroundColor = UIColor.red
         }
    
-        questionNumber += 1
-        
-        
+        quizBrain.nextQuestion()
         Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(updateUI), userInfo: nil, repeats: false)
         
         
@@ -80,33 +63,11 @@ class ViewController: UIViewController {
     
     
     @objc func updateUI(){
-        
-    
-            falseButton.backgroundColor = UIColor.clear
-       
-    
-            trueButton.backgroundColor = UIColor.clear
-        
-        
-       
-
-       
-        
-        
-        
-        
-        if questionNumber < quiz.count{
-            questionLabel.text = quiz[questionNumber].text
-         
-        }
-        else{
-            progressBar.progress = 0
-            questionNumber = 0
-            questionLabel.text = quiz[questionNumber].text
-            questionsCorrect = 0
-            
-        }
-        
+        scoreLabel.text = "Score: \(quizBrain.getScore())"
+        questionLabel.text = quizBrain.getText()
+        progressBar.progress = quizBrain.getProcess()
+        falseButton.backgroundColor = UIColor.clear
+        trueButton.backgroundColor = UIColor.clear
         
         
     }
